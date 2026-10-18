@@ -72,33 +72,72 @@ movie don't make the rest unreadable.
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `analysis`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** Backs its judgment of the film with at least one specific,
+checkable detail that's actually used to support the claim, not just named
+in passing.
 
 **Example 1:**
->
+> "...I did admire the acting. Jane Fonda and Robert De Niro are great in
+> this movie... there is a great scene where he has to take his father to
+> a home for elderly people because he can't care for him anymore that
+> will break your heart." (imdb-train-001)
 
 **Example 2:**
->
+> "The wonderful music of George Gerschwin complements the great dancing
+> by Gene Kelly and Leslie Caron. 'An American in Paris' is a humorous,
+> light-hearted, loving film well worth watching. 8/10" (imdb-train-003)
+
+### `hot_take`
+
+**Definition:** States a confident verdict on the film without using any
+detail to argue for it — names, scenes, or numbers can still appear, but
+they decorate the opinion instead of supporting it.
+
+**Example 1:**
+> "This is probably the worst excuse for television programming since,
+> oh, I don't know, WHATS HAPPENING NOW?... This show is TOXIC!"
+> (imdb-train-022)
+
+**Example 2:**
+> "Lots of singing and dancing in this one, especially by Gene Kelly...
+> Musical lovers only." (imdb-train-028)
+
+### `reaction`
+
+**Definition:** Centers on the reviewer's own in-the-moment experience of
+watching — what they felt or did — rather than building a case about the
+film itself.
+
+**Example 1:**
+> "Any movie that has nude scenes of Karen Allen and I'm still so bored I
+> walk out, that is a stinker!... I walked out." (imdb-train-005)
+
+**Example 2:**
+> "I watched it on Saturday and I still cannot get it out of my head.
+> AMAZING and sad all at the same time... Make sure you have plenty of
+> Kleenex..." (imdb-train-008)
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `analysis` and `hot_take`
 
 **The decision rule I used every time:**
 <!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
      if the tone is heated." -->
+
+A named actor, director credit, or numeric score only counts toward
+`analysis` if the post *uses* it to support the claim. If the fact is just
+dropped into a rant with nothing connecting it to a reason, it's still
+`hot_take` — even though it looks checkable on its own.
+
+The post that made me write this rule down: imdb-train-049 names three real
+actors (Coburn, Hackman, Bergen) and gives a literal score ("4 Horses/10")
+— the same ingredients as the `analysis` examples above — but neither does
+any work. They're just listed on the way to "Boring, tedious, and very
+tiresome waste of celluloid." Nothing in the post explains *why* those
+actors or that score support the verdict, so it stayed `hot_take`.
 
 
 
