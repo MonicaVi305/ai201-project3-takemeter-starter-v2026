@@ -42,7 +42,25 @@
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
 
+This classifier sorts public IMDb user movie reviews into three categories
+based on how the reviewer backs up their opinion: do they argue it with a
+specific, checkable detail (`analysis`), state it as a flat verdict with
+nothing behind it (`hot_take`), or center the post on their own in-the-moment
+experience of watching (`reaction`)? The 200 reviews cover 200 different
+films, so no single plot or release dominates the set, and spoilers for one
+movie don't make the rest unreadable.
 
+**Candidate distinctions noticed while reading (Milestone 1):**
+- Some reviews cite a specific, checkable detail — an actor's name used to
+  make a point, a director's other films, a particular scene, a numeric
+  score — while others just assert a verdict and move on.
+- Some reviews are about the reviewer's own experience in the moment
+  (walked out, cried, rewatched it twice) rather than about the film as an
+  object to be judged.
+- Longer reviews tend to walk through plot and performance point by point;
+  one- or two-line reviews tend to be a single blunt judgment.
+- Some reviews argue against an anticipated disagreement ("I know everyone
+  loved this, but...") while others just state a feeling and stop there.
 
 ---
 
