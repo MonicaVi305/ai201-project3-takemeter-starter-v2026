@@ -244,7 +244,7 @@ for.
 **Base model:** `distilbert-base-uncased`
 
 **Settings:** 3 epochs, learning rate 2e-5, batch size 16, max length 128
-tokens, seed 42
+tokens, seed 42 
 
 **Anything I changed from the defaults, and why:** Nothing — ran the
 notebook's defaults as given.
@@ -275,17 +275,43 @@ from the same seed.
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* With my three draft label definitions (close to the
+  assignment's own worked example at that point), I asked for the
+  strongest case for each label on a post that felt borderline, and to
+  surface any real post from my 200 that sat ambiguously between
+  `analysis` and `hot_take` rather than a made-up one.
+- *What came back:* `imdb-train-049` — a review that names three real
+  actors (Coburn, Hackman, Bergen) and gives a literal numeric score
+  ("4 Horses/10"), the same surface ingredients as my `analysis`
+  examples, but spends the whole post ranting rather than arguing from
+  either.
+- *What I changed:* Rewrote the `analysis` and `hot_take` definitions so
+  neither is a copy of the assignment's example wording anymore, and
+  added the explicit decision rule — a checkable detail only counts
+  toward `analysis` if the post *uses* it to support the claim, not just
+  names it. That rule is what Milestone 2's "hardest boundary" section
+  and two of the three hard cases in "The Dataset" are built on.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Pre-labels for the 180 non-cold posts, given my
+  label definitions and the decision rule above, as a first pass to read
+  and correct rather than to keep as-is.
+- *What came back:* A suggested label for each of the 180 posts.
+- *What I changed:* Read every single one against my own definitions and
+  corrected any that didn't actually hold up — most often cases where a
+  post had just enough of a "fact" in it (a name, a rating) to look like
+  `analysis` on a skim but wasn't actually arguing from it, the same
+  failure mode as `imdb-train-049` above. I kept the 20 cold-labeled
+  posts (`imdb-train-001` through `-020`) completely separate from this
+  process — no AI involvement there at all, by design.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** Yes. 20 of the 200 rows were labeled cold
+(no tools, no help) and are marked `cold` in `labels.csv`'s `note`
+column. The other 180 were AI-pre-labeled against my definitions and
+decision rule, then individually read and corrected before being kept —
+marked `pre-labelled, corrected` in the same column. This is also
+disclosed in "The Dataset" section above.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
