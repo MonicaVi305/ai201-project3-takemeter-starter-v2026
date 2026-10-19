@@ -148,19 +148,33 @@ actors or that score support the verdict, so it stayed `hot_take`.
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** Public IMDb user movie reviews — real reviews
+ordinary users posted under a film's IMDb page, covering 200 different films
+so no single plot or release dominates the set.
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** I labelled the first 20 posts (`imdb-train-001`
+through `imdb-train-020`) cold — no help, no tools, just my own definitions
+and decision rule from Milestone 2. Those rows are marked `cold` in the
+`note` column. For the remaining 180, I gave an AI tool my label
+definitions and decision rule and had it suggest a label for each post,
+then I read every single one and corrected any label that didn't actually
+match my taxonomy before keeping it. Those rows are marked
+`pre-labelled, corrected` in the `note` column.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `analysis` | 140 | 70.0% |
+| `reaction` | 42 | 21.0% |
+| `hot_take` | 18 | 9.0% |
+| **Total** | 200 | 100% |
+
+`analysis` sits right at the 70% ceiling. It isn't over the line, but it's
+close enough that I'd add more `hot_take` and `reaction` examples first if
+I were collecting again — the per-label `hot_take` target and the macro-F1
+balance criterion in `criteria.md` are both set as loosely as they are
+partly because of this.
 
 **Three hard cases**
 
@@ -168,20 +182,58 @@ Say so plainly — the disclosure is required, not penalised. -->
      been, and what you chose. These are worth more than the easy 190. -->
 
 **1.**
-> *The post:*
+> *The post:* `imdb-train-049` — "Ohhh the brutality, ohhhhh the dying
+> breed... in light of Coburn/Hackman/Bergen's presence... 4 Horses/10-all
+> deader'n hell."
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `hot_take`. It names three real actors
+> and gives a literal numeric score — the same ingredients my `analysis`
+> examples use.
 >
-> *I chose, because:*
+> *I chose `hot_take`, because:* neither the actors' names nor the score
+> are used to argue anything — they're dropped into a rant on the way to
+> "boring, tedious, and very tiresome." This is the post that made me
+> write the "the fact has to do work" rule down.
 
 **2.**
-> *The post:*
+> *The post:* `imdb-train-038` — "Barney seems to be utterly boring and
+> uninspired 'content-wise'... I was never bored seeing Alejandro
+> Jodorowsky's movies, while Drawing Restraint 9 was an utter
+> disappointment... I want more Jodorowsky!!!"
 >
-> *Could have been:*
+> *Could have been:* `reaction` or `hot_take`. It's written in the first
+> person and reports the writer's own experience across several films
+> ("I was never bored... I am afraid...").
 >
-> *I chose, because:*
+> *I chose `hot_take`, because:* it isn't reporting one immediate
+> experience — it's a general claim about the director's whole body of
+> work being empty and pretentious. Staff's own rule 2 (`reaction` vs.
+> `hot_take`) calls this exactly: a post about a claim, not about what
+> just happened to the writer.
 
 **3.**
+> *The post:* `imdb-train-056` — "I am an avid movie goer and have seen
+> previews for this movie for months... Then I went and saw it, I was
+> sunk down in my seat almost asleep... Maybe even check out The Kings of
+> Comedy again."
+>
+> *Could have been:* `analysis` or `reaction`. It names a specific
+> comparison film ("The Kings of Comedy"), which looks like the kind of
+> checkable detail `analysis` needs.
+>
+> *I chose `reaction`, because:* the comparison is a throwaway aside, not
+> the reason for the verdict — the whole post is actually about the
+> writer's own experience sitting in the theater (hyped up, then nearly
+> falling asleep). The named film doesn't do any argumentative work, so
+> the same rule that moved `imdb-train-049` to `hot_take` keeps this one
+> out of `analysis` too.
+
+**What the pattern across these three tells me:** all three hard cases
+turn on the same test — does the checkable detail (a name, a score, a
+comparison) actually carry the argument, or is it just along for the
+ride? That's the rule from Milestone 2's hardest boundary, and it ended up
+doing more work than I expected across labels I didn't originally write it
+for.
 > *The post:*
 >
 > *Could have been:*
