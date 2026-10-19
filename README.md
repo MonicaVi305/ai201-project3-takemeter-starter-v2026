@@ -234,11 +234,6 @@ comparison) actually carry the argument, or is it just along for the
 ride? That's the rule from Milestone 2's hardest boundary, and it ended up
 doing more work than I expected across labels I didn't originally write it
 for.
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
 
 ---
 
@@ -246,17 +241,26 @@ for.
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, max length 128
+tokens, seed 42
 
-**Anything I changed from the defaults, and why:**
+**Anything I changed from the defaults, and why:** Nothing — ran the
+notebook's defaults as given.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Split sizes:** Stratified 70/15/15 → train 139, val 31, test 30.
+Per-label counts in the test split: `analysis` 21, `reaction` 6,
+`hot_take` 3. Both `reaction` and `hot_take` are under the ~8-example
+mark the notebook flags — `hot_take` especially, at only 3 posts, where
+getting a single one right or wrong swings its F1 by a third. That's
+exactly why Milestone 3's `hot_take` target (≥ 0.35) was set loose going
+in, rather than as a reaction to seeing this number.
 
-
+**What I trained on:** CPU (`torch 2.14.1+cpu`), no GPU/MPS available.
+Recorded in `results.json` as `device`/`device_name`/`torch_version` —
+noting it here too since different hardware can produce different numbers
+from the same seed.
 
 ---
 
