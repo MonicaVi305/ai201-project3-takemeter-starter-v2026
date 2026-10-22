@@ -138,7 +138,7 @@ expect going in, not a stretch target.
 
          ## 2. Every label performs acceptably
 
-         The model performs well on all labels.
+         The model performs well on all labels.  
 
          **Why this target:** ...
 

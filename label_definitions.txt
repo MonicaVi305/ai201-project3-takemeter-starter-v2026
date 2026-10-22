@@ -6,3 +6,34 @@
 analysis: backs its judgment of the film with a specific, checkable detail actually used to support the claim, not just named in passing
 hot_take: states a confident verdict on the film without using any detail to argue for it, even if names or numbers appear
 reaction: centers on the reviewer's own in-the-moment experience of watching, rather than building a case about the film
+ 
+1	Tom Brady won seven Super Bowls, which is more than any single NFL franchise has won. | label:analysis
+2	Pineapple on pizza is the best topping ever invented. | label: hot_take
+3	Wait, did he really just miss that free throw? I can't breathe.	 | label: reaction
+4	Leicester City won the 2015-16 Premier League at 5000-1 odds, so money doesn't guarantee titles. | label: analysis
+5	Remote work makes everyone more productive.  | label: hot_take
+6	Oh no, the finale ended on a cliffhanger. I'm devastated.	 | label: reaction
+7	Vinyl outsold CDs in the US in 2022 for the first time since 1987, per the RIAA, so it's no passing fad.	 | label: analysis
+8	The sequel is always better than the original.	 | label: hot_take
+9	That goal in stoppage time! I'm literally shaking right now.  | label: reaction
+10	Messi scored seven goals and won the Golden Ball at the 2022 World Cup, which strengthens his GOAT case.  | label: analysis
+11	Nobody will be using email in ten years. | label: hot_take
+12	Ugh, my flight just got canceled again. I want to scream.  | label: reaction
+13	Norway's EV share of new car sales passed 80% in 2023, so electric cars can go mainstream.  | label: analysis
+14	Cats are smarter than dogs. End of discussion.	 | label: hot_take
+15	Wow, they actually announced a reunion tour! I'm so happy I could cry.	 | label: reaction
+16	The Titanic carried lifeboats for only about half the people aboard in 1912, which is why safety rules changed.	 | label: analysis
+17	Breakfast is the most overrated meal of the day.	 | label: hot_take
+18	No way, the power just went out mid-game. Unbelievable.	 | label: reaction
+19	The Warriors won four titles between 2015 and 2022, putting their run alongside the 90s Bulls.  | label: analysis
+20	Superhero movies have ruined cinema.	 | label: hot_take
+21	Yes! I finally passed my driving test! Best day ever.  | label: reaction
+22	Hamlet runs about 30,000 words, making it Shakespeare's longest play, so cutting it for the stage is normal.  | label: analysis
+23	Coffee tastes better from a paper cup.	 | label: hot_take
+24	Did that referee seriously just call that a foul? I'm furious.  | label: reaction
+25	Apple's App Store launched in July 2008 with 500 apps, and that's when phones became computers.	 | label: analysis
+26	Every band's first album is their best one.	 | label: hot_take
+27	Oh wow, that plot twist came out of nowhere. My jaw is on the floor.  | label: reaction
+28	The US Census found 27.6 million people mainly worked from home in 2021, so remote work is here to stay.  | label: analysis
+29	Winter is the only season worth looking forward to.	 | label: hot_take
+30	They lost in the last second again. I can't watch this anymore.	 | label: reaction

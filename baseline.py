@@ -21,7 +21,7 @@ the point: this is what "no fine-tuning" costs you at runtime as well as in
 accuracy.
 
     python baseline.py --help
-    python baseline.py
+    python baseline.py 
     python baseline.py --trained results.json
 
 The first run downloads the model, about 1.6 GB. Do that before class, not

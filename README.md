@@ -332,9 +332,39 @@ disclosed in "The Dataset" section above.
 | F1 — `label_one` |  |  |  |
 | F1 — `label_two` |  |  |  |
 
+Paste this into your README under **Baseline vs. Trained**:
+
+| Measure | Baseline | Trained | Difference |
+|---|---|---|---|
+| Overall accuracy | 0.633 | 0.700 | +0.067 |
+| Macro F1 | 0.322 | 0.275 | -0.047 |
+| F1 — `analysis` | 0.766 | 0.824 | +0.058 |
+| F1 — `hot_take` | 0.000 | 0.000 | +0.000 |
+| F1 — `reaction` | 0.200 | 0.000 | -0.200 |
+
+**Which baseline this is:** the table above is the run **with** my
+definitions from `label_definitions.txt` (`baseline_results.json`). I also ran
+it once on purpose with bare label names only (`baseline_results_bare.json`),
+on the same 30 held-out posts:
+
+| Baseline prompt | Accuracy | Macro F1 |
+|---|---|---|
+| Bare label names | 0.133 | 0.104 |
+| My definitions | 0.633 | 0.322 |
+| **Gap (what the definitions were worth)** | **+0.500** | **+0.218** |
+
+The bare-names run is not the baseline I'm reporting. Its predictions were 21
+`reaction`, 8 `hot_take`, 1 `analysis`, on a held-out set that is 21/30
+`analysis` — the bare names mean almost nothing to the model. The with-definitions
+run predicted 26 `analysis` and 4 `reaction`, never `hot_take`, so much of its
+gain is leaning toward the majority class rather than discriminating between
+labels. Both baselines are below the 0.70 accuracy that always guessing
+`analysis` would score.
+
 **What I predicted before I looked:**
 <!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
      prediction made afterwards isn't one. -->
+     The prediction: on my balanced file, answering analysis every time is right only 10 of 30 times. So both models would drop to about 0.33 accuracy, roughly one in three. Their good-looking scores now come mostly from the held-out set being mostly analysis, not from the models telling the labels apart.
 
 **What the gap actually means:**
 <!-- If the baseline matched your trained model, your fine-tuning added
