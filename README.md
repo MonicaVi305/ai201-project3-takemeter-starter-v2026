@@ -370,6 +370,17 @@ labels. Both baselines are below the 0.70 accuracy that always guessing
 <!-- If the baseline matched your trained model, your fine-tuning added
      nothing — and that is a real finding, not a failure. Say it plainly. -->
 
+Fine-tuning added almost nothing. The trained model is +0.067 on accuracy
+(0.700 vs 0.633) but -0.047 on macro F1 (0.275 vs 0.322), and it loses the
+only minority-label signal the baseline had (`reaction` F1 0.200 → 0.000).
+Its accuracy is exactly the 0.70 you get from always guessing `analysis`
+(21 of 30 test posts), because that is what it does: the confusion matrix
+shows every test post called `analysis`. The baseline at least tried to tell
+labels apart and the trained model did not, so on this data the zero-shot
+baseline is the more useful of the two. My prediction above assumed a
+balanced file; my real test set is 21/30 `analysis`, which is why both
+models land near or above the 0.70 floor instead of 0.33.
+
 
 
 ---
@@ -381,28 +392,37 @@ labels. Both baselines are below the 0.70 accuracy that always guessing
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.80 | 0.700 | 0.700 | 0.700 | MISSED |
+| 2. Macro F1 | ≥ 0.55 | 0.275 | 0.275 | 0.275 | MISSED |
+| 3. `analysis` F1 | ≥ 0.80 | 0.824 | 0.824 | 0.824 | MET |
+| 4. `hot_take` F1 | ≥ 0.35 | 0.000 | 0.000 | 0.000 | MISSED |
+| 5. Agreement with staff set | ≥ 0.70 | — | — | — | Not yet measured (Milestone 4 agreement check) |
+
+Spread across seeds is 0.000 on every measure. Run on CPU (torch 2.14.1+cpu), 3 epochs, learning rate 2e-5, batch size 16, max length 128, 30 test posts per seed. Raw numbers are in `results_three_seeds_before.json`.
+
+**What the three seeds show:** All three seeds gave accuracy 0.700 and macro F1 0.275. Validation accuracy was 0.710 and macro F1 0.277 at every epoch of every seed, so the model never improved during training. The model is predicting `analysis` for every post. `analysis` is 70% of my 200 labels (140 posts) and `hot_take` is only 18, so the model collapsed onto the majority class. `hot_take` and `reaction` both scored F1 0.000, and `analysis` F1 is 0.824 only because it is the one label the model ever guesses.
+
+The zero spread is not a sign of a stable, good result. The seeds change which posts land in the test split, but the model gives the same answer on every split. The 0.700 accuracy is the share of `analysis` posts in the test set (21 of 30), not evidence that the model can tell the labels apart.
 
 ### Confusion matrix
 
 <!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
      An image of a matrix earns nothing. -->
 
-| true \ predicted |  |  |  |
+| true \ predicted | analysis | hot_take | reaction |
 |---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| **analysis** | 21 | 0 | 0 |
+| **hot_take** | 3 | 0 | 0 |
+| **reaction** | 6 | 0 | 0 |
+
+(Seed 42, 30 test posts. Seeds 7 and 2024 produced the identical matrix.)
 
 **My biggest off-diagonal number, and what it means:**
 <!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
      direction. "7 real analysis posts were called hot_take and only 3 went the
      other way" is a direction, not just an error rate. -->
 
+6 real `reaction` posts were called `analysis` (and all 3 `hot_take` posts were too, with nothing going the other way): the model never learned the `reaction` or `hot_take` boundaries and labeled every test post `analysis`, so the 0.70 accuracy is just the `analysis` share of the test set (21 of 30).
 
 
 ---
@@ -414,13 +434,35 @@ labels. Both baselines are below the 0.70 accuracy that always guessing
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.80 | MISSED | 0.700 on all three seeds, below 0.80 every time. It is also only the majority-class floor, not skill. |
+| 2 | Macro F1 | ≥ 0.55 | MISSED | 0.275 on all three seeds, about half the target and equal to the always-`analysis` degenerate score. |
+| 3 | `analysis` F1 | ≥ 0.80 | MET | 0.824 on all three seeds. Holds across seeds, but it is the one label the model ever predicts, so this is not a sign of a good model. |
+| 4 | `hot_take` F1 | ≥ 0.35 | MISSED | 0.000 on all three seeds. The model never predicted `hot_take`. |
+| 5 | Agreement with staff set | ≥ 0.70 | NOT YET MEASURED | Needs the agreement check (`agreement.py`); fill in after the Agreement Report below. |
 
 **Diagnoses**
+
+**Criteria 1, 2 and 4: collapse onto the majority label, caused by too few examples.**
+`analysis` is 140 of 200 labels (70%) and `hot_take` is 18 (9%), so in each
+training split there are only about 12 `hot_take` posts against 97
+`analysis`. How I know: the confusion matrix has every test post in the
+`analysis` column; validation accuracy (0.710) and macro F1 (0.277) did not
+move across all three epochs of any seed; and the results were identical
+across three different splits, so it is not a lucky or unlucky draw. With 3
+epochs, learning rate 2e-5 and this class imbalance, the model settled on the
+cheapest answer. Fixes to try in Milestone 5: class weights or oversampling
+of `hot_take` and `reaction`, more `hot_take` examples, and more epochs.
+
+**Criterion 4 specifically:** the test split holds only 3 `hot_take` posts,
+so even a working model would have a jumpy F1 on it. That is a reason the
+number is noisy, not an excuse for 0.000, because the model predicted zero
+`hot_take` posts out of 30.
+
+**Labelling vs. model:** I can't separate these yet. The agreement report is
+the instrument that can, and I haven't run it. If my agreement with the staff
+set is high, the zeros point at the model and the data balance; if it is low
+on `hot_take` and `reaction` posts, my own boundary is part of the problem.
+Update this paragraph once the agreement rate is in.
 
 <!-- For each miss: the cause, and how you know. The four common causes are:
      too few examples for a label, a boundary you applied inconsistently, a
