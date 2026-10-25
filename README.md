@@ -327,15 +327,6 @@ disclosed in "The Dataset" section above.
 
 | Measure | Baseline | Trained | Difference |
 |---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
-
-Paste this into your README under **Baseline vs. Trained**:
-
-| Measure | Baseline | Trained | Difference |
-|---|---|---|---|
 | Overall accuracy | 0.633 | 0.700 | +0.067 |
 | Macro F1 | 0.322 | 0.275 | -0.047 |
 | F1 — `analysis` | 0.766 | 0.824 | +0.058 |
@@ -396,7 +387,7 @@ models land near or above the 0.70 floor instead of 0.33.
 | 2. Macro F1 | ≥ 0.55 | 0.275 | 0.275 | 0.275 | MISSED |
 | 3. `analysis` F1 | ≥ 0.80 | 0.824 | 0.824 | 0.824 | MET |
 | 4. `hot_take` F1 | ≥ 0.35 | 0.000 | 0.000 | 0.000 | MISSED |
-| 5. Agreement with staff set | ≥ 0.70 | — | — | — | Not yet measured (Milestone 4 agreement check) |
+| 5. Agreement with staff set | ≥ 0.70 | 1.000 | 1.000 | 1.000 | MET (one comparison, not per-seed) |
 
 Spread across seeds is 0.000 on every measure. Run on CPU (torch 2.14.1+cpu), 3 epochs, learning rate 2e-5, batch size 16, max length 128, 30 test posts per seed. Raw numbers are in `results_three_seeds_before.json`.
 
@@ -438,7 +429,7 @@ The zero spread is not a sign of a stable, good result. The seeds change which p
 | 2 | Macro F1 | ≥ 0.55 | MISSED | 0.275 on all three seeds, about half the target and equal to the always-`analysis` degenerate score. |
 | 3 | `analysis` F1 | ≥ 0.80 | MET | 0.824 on all three seeds. Holds across seeds, but it is the one label the model ever predicts, so this is not a sign of a good model. |
 | 4 | `hot_take` F1 | ≥ 0.35 | MISSED | 0.000 on all three seeds. The model never predicted `hot_take`. |
-| 5 | Agreement with staff set | ≥ 0.70 | NOT YET MEASURED | Needs the agreement check (`agreement.py`); fill in after the Agreement Report below. |
+| 5 | Agreement with staff set | ≥ 0.70 | MET | 30 / 30 = 100% against the staff labels, see the Agreement Report below. |
 
 **Diagnoses**
 
@@ -458,22 +449,16 @@ so even a working model would have a jumpy F1 on it. That is a reason the
 number is noisy, not an excuse for 0.000, because the model predicted zero
 `hot_take` posts out of 30.
 
-**Labelling vs. model:** I can't separate these yet. The agreement report is
-the instrument that can, and I haven't run it. If my agreement with the staff
-set is high, the zeros point at the model and the data balance; if it is low
-on `hot_take` and `reaction` posts, my own boundary is part of the problem.
-Update this paragraph once the agreement rate is in.
-
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
-
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
-
-
+**Labelling vs. model:** The agreement report points at the model and the
+data balance, not my labelling. I matched staff on 30 / 30 posts under their
+written rules, so I applied a rule consistently when it was written down.
+That makes "a boundary I applied inconsistently" an unlikely cause of the
+zero F1 on `hot_take` and `reaction`, and leaves too few examples (18
+`hot_take`, about 12 per training split) and a model that barely trained as
+the likely causes. The limit on this evidence is that the staff set is
+balanced and mine is not, and 100% is above the 70s staff expected, so it
+rules out sloppy application of a rule but does not prove all 200 labels are
+right.
 
 ---
 
@@ -484,8 +469,7 @@ Update this paragraph once the agreement rate is in.
      Remember you labelled these 30 under the STAFF taxonomy in
      data/staff_taxonomy.md, not your own — so every argument below is made
      from those definitions and those decision rules. -->
-
-**Agreement rate:** ___ / 30 = ___%
+**Agreement rate:** 30 / 30 = 100% (`agreement_results.json`)
 
 <!-- Nobody grades this number. A 60% who argues every disagreement from the
      stated rules beats a 95% who wrote "staff was right" nine times. Several
@@ -507,26 +491,20 @@ Update this paragraph once the agreement rate is in.
      written rule two different ways on 30 posts, that is direct evidence about
      what you did across your own 200. -->
 
-**1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
+There were no disagreements, so there is nothing to adjudicate and no posts to
+sort into piles (a), (b) or (c).
 
 **What the pattern in my disagreements tells me:**
 
+I matched staff on all 30 posts, so there is no pattern of disagreement to
+read. Two honest caveats. First, 100% is higher than the "in the 70s" staff
+said is normal for this set, which was built with several ambiguous posts, so
+I can't claim the set was easy or that every call was obvious; I can only say
+I applied the written rules the same way staff did on these 30. Second, the
+staff set is balanced (10 of each label) while my own 200 labels are 70%
+`analysis`, so this shows I can apply a written rule consistently, not that
+every one of my 200 labels was right. It is evidence against a labelling
+problem, not proof of its absence.
 
 
 ---
