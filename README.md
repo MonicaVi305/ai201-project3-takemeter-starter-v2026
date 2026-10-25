@@ -433,32 +433,62 @@ The zero spread is not a sign of a stable, good result. The seeds change which p
 
 **Diagnoses**
 
-**Criteria 1, 2 and 4: collapse onto the majority label, caused by too few examples.**
-`analysis` is 140 of 200 labels (70%) and `hot_take` is 18 (9%), so in each
-training split there are only about 12 `hot_take` posts against 97
-`analysis`. How I know: the confusion matrix has every test post in the
-`analysis` column; validation accuracy (0.710) and macro F1 (0.277) did not
-move across all three epochs of any seed; and the results were identical
-across three different splits, so it is not a lucky or unlucky draw. With 3
-epochs, learning rate 2e-5 and this class imbalance, the model settled on the
-cheapest answer. Fixes to try in Milestone 5: class weights or oversampling
-of `hot_take` and `reaction`, more `hot_take` examples, and more epochs.
+**Criterion 1, overall accuracy (0.700, target 0.80). Cause: too few examples, so the model collapsed onto the majority label.**
+0.700 is exactly the share of `analysis` in the test split (21 of 30), and the
+confusion matrix has all 30 test posts in the `analysis` column. So the
+accuracy is the "always guess `analysis`" floor, not skill. `analysis` is 140
+of 200 labels (70%), so the model can reach 0.70 without learning anything
+else.
 
-**Criterion 4 specifically:** the test split holds only 3 `hot_take` posts,
-so even a working model would have a jumpy F1 on it. That is a reason the
-number is noisy, not an excuse for 0.000, because the model predicted zero
-`hot_take` posts out of 30.
+**Criterion 2, macro F1 (0.275, target 0.55). Cause: the same collapse.**
+Macro F1 averages the three labels equally: (0.824 + 0 + 0) / 3 = 0.275.
+It is the degenerate always-`analysis` score, which my own criteria.md
+predicted before training. Evidence it is the data and training and not bad
+luck: validation accuracy (0.710) and macro F1 (0.277) did not move across
+any of the 3 epochs in any seed, and all three seeds, which use three
+different splits, gave identical test numbers. With 3 epochs, learning rate
+2e-5 and 70% of the data in one label, the model never left the cheapest
+answer.
+
+**Criterion 4, `hot_take` F1 (0.000, target 0.35). Cause: too few `hot_take` examples, made worse by a tiny test split.**
+`hot_take` is 18 of 200 labels (9%), about 12 posts in each training split,
+against about 97 `analysis`. The model predicted `hot_take` zero times out of
+30, so the 0.000 is not noise: even a loose 0.35 needs at least one correct
+`hot_take` prediction. The test split holds only 3 `hot_take` posts, so any
+working model would still have a jumpy F1 here, but that explains how noisy
+the number would be, not a score of exactly 0 on every seed.
+
+**What I ruled out.** *A genuinely hard label pair:* the off-diagonal cells
+are all in the `analysis` column and none between `hot_take` and `reaction`,
+so there is no specific pair the model is confusing; it isn't separating
+anything. *A task the model can't reach from 200 examples:* I can't rule this
+out yet. The model did not train usefully on this imbalanced data, so I
+can't say what it would do on balanced data. The Milestone 5 re-run tests it.
+*An inconsistently applied boundary in my own labels:* see below.
 
 **Labelling vs. model:** The agreement report points at the model and the
 data balance, not my labelling. I matched staff on 30 / 30 posts under their
 written rules, so I applied a rule consistently when it was written down.
 That makes "a boundary I applied inconsistently" an unlikely cause of the
-zero F1 on `hot_take` and `reaction`, and leaves too few examples (18
-`hot_take`, about 12 per training split) and a model that barely trained as
-the likely causes. The limit on this evidence is that the staff set is
-balanced and mine is not, and 100% is above the 70s staff expected, so it
-rules out sloppy application of a rule but does not prove all 200 labels are
-right.
+zero F1 on `hot_take` and `reaction`. Because I had no disagreements, I
+can't point to a label pair I split differently from staff, so I can't tie
+any miss to a specific pair. The limit on this evidence is that the staff
+set is balanced and mine is not, and 100% is above the 70s staff expected,
+so it rules out sloppy application of a rule but does not prove all 200
+labels are right.
+
+**Checking my verdicts the other way.** *Criterion 3 (`analysis` F1 0.824,
+MET):* the strongest case for MISSED is that the model only reaches 0.824
+because it guesses `analysis` every time, so it isn't really performing well.
+That is a true caveat, but the criterion as written is a number on one
+label, 0.824 clears 0.80 on all three seeds, and the weakness belongs to
+criteria 2 and 4, so I'm keeping MET. *Criterion 5 (agreement 1.000, MET):*
+the case against is that it is one comparison and not three seeds, and that
+100% is above what staff expected. I kept MET because the rate is
+well above 0.70 and no part of it is a close call.
+
+**Criterion changes:** none. All five criteria were measurable and I missed
+three of them, so nothing is being revised and the original targets stand.
 
 ---
 
