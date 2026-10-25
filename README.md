@@ -313,6 +313,31 @@ decision rule, then individually read and corrected before being kept —
 marked `pre-labelled, corrected` in the same column. This is also
 disclosed in "The Dataset" section above.
 
+**Unit 6 update**
+
+- *What I asked for:* I asked Claude (in my editor) to review whether my
+  notebook's three-seed run (section 6) had run, to run it for me when I got
+  an error, to read my confusion matrix, and to help draft the write-up of
+  the run logs, verdicts and diagnoses from my results files. After the
+  collapse I also asked it to pick and run one improvement.
+- *What came back:* It re-ran section 6 outside the notebook and wrote
+  `results_three_seeds_before.json`. It pointed out that all three seeds gave
+  the same numbers, that validation scores never moved, and that the matrix
+  showed every test post called `analysis`, which is how I found the
+  majority-class collapse. It drafted the README text from my JSON files, and
+  for the improvement it suggested raising epochs from 3 to 10 and ran it,
+  writing `results_three_seeds_after.json`.
+- *What I changed:* I kept its numbers only where they matched my results
+  files, and I checked my five criteria's targets against `criteria.md`. It
+  did not move my targets or criteria. It also did not choose any of my
+  labels: it made a blank template of the 30 staff posts, I filled in the
+  labels myself from the staff taxonomy, and I did not give it the staff key
+  before I had finished. It ran `agreement.py` after that, and the 30 / 30
+  agreement is mine.
+- *Where I disagreed with or limited it:* It could not add real `hot_take`
+  posts, because collecting and labelling those has to be my own work, so
+  the improvement only tests the training-length half of my diagnosis.
+
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 5.
@@ -624,11 +649,11 @@ than a missed `analysis`. I stopped because I only changed one setting this
 run, and because new labelled data wasn't something I could add in this run.
 
 **The gap between what I meant my labels to capture and what the model
-learned:** I meant `hot_take` to be a distinct kind of post, but after 10
-epochs the model still calls every real `hot_take` post `analysis` or
-`reaction` (the matrix row is 1 / 0 / 2 on seed 42), so it never learned my
-`hot_take` boundary. With only 18 examples, I can't tell from this whether
-the boundary is hard to learn or just under-sampled.
+learned:** I meant `hot_take` to be a distinct kind of post, but even after
+10 epochs the model never predicts it: the `hot_take` row of the seed 42 matrix
+is 1 / 0 / 2, so every real `hot_take` post went to `analysis` or `reaction`.
+With only 18 examples I can't tell whether the boundary is hard to learn or
+just under-sampled, so what I labelled and what it learned are still apart.
 
 ---
 
