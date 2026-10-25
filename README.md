@@ -541,40 +541,96 @@ problem, not proof of its absence.
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** One training setting: epochs, from 3 to 10. Nothing
+else moved: same data (`labels.csv`, 200 rows, no relabelling, no new posts),
+same model, learning rate 2e-5, batch size 16, max length 128, same three
+seeds (42, 7, 2024), same CPU. `RUN_LABEL` was set to `"after"`, so the
+results are in `results_three_seeds_after.json` and the before numbers in
+`results_three_seeds_before.json` were not overwritten.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The diagnosis for criteria 1, 2 and 4 said
+the model collapsed onto `analysis`, and the evidence was that validation
+accuracy (0.710) and macro F1 (0.277) did not move at all across the 3
+epochs. That points at training having stopped before the model left the
+cheapest answer, so more epochs was the one listed fix that tests it. My
+main diagnosis was also too few `hot_take` examples (18). I did not add
+examples, because I can't collect and label 30 real posts in this run, so
+that part of the diagnosis is untested.
 
-### Run Log — After
+### Run Log — Before and After
 
-| Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
+| Criterion | Target | Before: 42 / 7 / 2024 | After: 42 / 7 / 2024 | Verdict before | Verdict after |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.80 | 0.700 / 0.700 / 0.700 | 0.800 / 0.833 / 0.767 | MISSED | MISSED |
+| 2. Macro F1 | ≥ 0.55 | 0.275 / 0.275 / 0.275 | 0.535 / 0.559 / 0.493 | MISSED | MISSED |
+| 3. `analysis` F1 | ≥ 0.80 | 0.824 / 0.824 / 0.824 | 0.900 / 0.909 / 0.864 | MET | MET |
+| 4. `hot_take` F1 | ≥ 0.35 | 0.000 / 0.000 / 0.000 | 0.000 / 0.000 / 0.000 | MISSED | MISSED |
+| 5. Agreement with staff set | ≥ 0.70 | 1.000 | 1.000 | MET | MET |
 
-**Did it help, and how do I know:**
+Criterion 5 does not depend on training, so it is the same number. Seed 2024
+is what keeps criterion 1 a miss (0.767), and 0.800 on seed 42 only just
+reaches the target.
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
+The `reaction` F1, which is not one of my five criteria, went from 0.000 in
+all three seeds to 0.706 / 0.769 / 0.615.
 
+**After confusion matrix (seed 42, 30 test posts; seeds 7 and 2024 differ by
+1 to 2 posts per cell):**
 
+| true \ predicted | analysis | hot_take | reaction |
+|---|---|---|---|
+| **analysis** | 18 | 0 | 3 |
+| **hot_take** | 1 | 0 | 2 |
+| **reaction** | 0 | 0 | 6 |
+
+**Did it help, and how do I know:** Yes, partly. More epochs fixed the
+collapse onto `analysis` but not the `hot_take` problem. How I know:
+- Accuracy rose from 0.700 to 0.767 to 0.833 and macro F1 from 0.275 to
+  0.493 to 0.559, on every seed. The model now predicts `reaction`: all 6
+  real `reaction` posts were caught on seed 42.
+- The validation scores moved this time. On seed 42 they stayed flat for 3
+  epochs (as before) and then rose at epoch 4 to 5, so the earlier flat line
+  was the model not having trained long enough, not a ceiling.
+- `hot_take` is still 0.000 on all three seeds and the model predicted it
+  zero times. With about 12 `hot_take` training posts, 10 epochs wasn't
+  enough to learn it, which fits the too-few-examples diagnosis rather than
+  the not-enough-training one.
+- Verdicts did not change: criteria 1, 2 and 4 are still MISSED, so by my own
+  targets the improvement did not get me over the line. Macro F1 is closest
+  (0.559 on one seed, 0.493 on another, against 0.55).
+
+Caution: the test split has 30 posts, so one post is 3.3 points of accuracy
+and the three seeds differ by up to 6.6 points (0.767 to 0.833). The jump
+from 0.700 is bigger than that spread, which is why I call it real, but I
+would not trust the exact numbers to a point.
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+**Criterion 1, overall accuracy (0.800 / 0.833 / 0.767 vs 0.80):** Missed on
+seed 2024. I'd try a few more epochs and the class-weighting fix below. I
+stopped at 10 epochs because the milestone allows one change and the gain
+had mostly levelled off by epoch 5 to 7 in the logs.
 
+**Criterion 2, macro F1 (0.535 / 0.559 / 0.493 vs 0.55):** Missed on two of
+three seeds. The gap is almost entirely `hot_take` at 0.000, which pulls the
+average down by a third regardless of the other two labels.
 
+**Criterion 4, `hot_take` F1 (0.000 on all seeds vs 0.35):** Still missed.
+What I'd do: collect 30 or more real `hot_take` posts labelled under the same
+definition, and add class weights so the loss counts a missed `hot_take` more
+than a missed `analysis`. I stopped because I only changed one setting this
+run, and because new labelled data wasn't something I could add in this run.
 
 **The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
+learned:** I meant `hot_take` to be a distinct kind of post, but after 10
+epochs the model still calls every real `hot_take` post `analysis` or
+`reaction` (the matrix row is 1 / 0 / 2 on seed 42), so it never learned my
+`hot_take` boundary. With only 18 examples, I can't tell from this whether
+the boundary is hard to learn or just under-sampled.
 
-
+---
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
